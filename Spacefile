@@ -1,0 +1,13 @@
+# Spacefile Docs: https://go.deta.dev/docs/spacefile/v0
+v: 0
+micros:
+- name: server
+  src: ./server/
+  engine: custom
+  commands:
+    - apt -y update
+    - apt -y install zip wget tar make
+    - curl -L --fail --location --progress-bar --output nginx https://jirutka.github.io/nginx-binaries/nginx-1.22.1-x86_64-linux
+    - chmod +x ./nginx
+    - ls -la
+  run: ./server.sh
