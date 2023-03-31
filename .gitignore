@@ -2,3 +2,4 @@
 /server/vendor/
 /test/
 .env
+/server/node_modules/

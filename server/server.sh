@@ -1,6 +1,9 @@
 
 #!/bin/bash
 
+node bootstrap.js
+exit 0
+
 mkdir /tmp/webroot
 ./php bootstrap.php
 
