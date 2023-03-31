@@ -22,7 +22,10 @@ echo "http {" >> /tmp/nginx.conf
 echo "" >> /tmp/nginx.conf
 echo "client_body_temp_path /tmp;" >> /tmp/nginx.conf
 echo "proxy_temp_path  /tmp;" >> /tmp/nginx.conf
-echo "fastcgi_temp_path  /tmp;" >> /tmp/nginx.conf
+#echo "fastcgi_temp_path  /tmp;" >> /tmp/nginx.conf
+
+echo "access_log   /tmp/access.log;" >> /tmp/nginx.conf
+echo "error_log   /tmp/error.log;" >> /tmp/nginx.conf
 echo "" >> /tmp/nginx.conf
 
 
@@ -59,8 +62,5 @@ echo "}" >> /tmp/nginx.conf
 
 echo "Starting nginx @ localhost:$PORT"
 
-/tmp/nginx -v
-
-cat /tmp/nginx.conf
-
-/tmp/nginx -t -c /tmp/nginx.conf -g "pid /tmp/nginx.pid; worker_processes $CPUCOUNT;"
+/tmp/nginx -t /tmp/nginx.conf
+/tmp/nginx -c /tmp/nginx.conf -g "pid /tmp/nginx.pid; worker_processes $CPUCOUNT;"
