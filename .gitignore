@@ -3,3 +3,4 @@
 /test/
 .env
 /server/node_modules/
+/server/tmp/

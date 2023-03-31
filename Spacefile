@@ -7,12 +7,12 @@ micros:
   commands:
     - apt -y update
     - apt -y install zip wget tar make
-    - curl -L --fail --location --progress-bar --output nginx https://jirutka.github.io/nginx-binaries/nginx-1.22.1-x86_64-linux
+    #- curl -L --fail --location --progress-bar --output nginx https://jirutka.github.io/nginx-binaries/nginx-1.22.1-x86_64-linux
     - curl -L --fail --location --progress-bar --output php-8.1.8-static-bin-x86_64.tar.gz https://dl.zhamao.xin/php-bin/file/php-8.1.8-static-bin-x86_64.tar.gz
     - tar -xzvf php-8.1.8-static-bin-x86_64.tar.gz
     - rm -rf php-8.1.8-static-bin-x86_64.tar.gz
     - chmod +x ./php
-    - chmod +x ./nginx
+    #- chmod +x ./nginx
     - ls -la
   run: ./server.sh
-  dev: node bootstrap.js
+  dev: nodemon index.js

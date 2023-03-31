@@ -27,6 +27,7 @@ if(file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..'. DIRECTORY_SEPARATOR . '.env
 	$dotenv->load();
 } 
 
+$project_id = "";
 if($project_id == "" && isset($_ENV['DETA_PROJECT_ID'])) {
     $project_id = $_ENV['DETA_PROJECT_ID'];
 }elseif($project_id == "" && isset($_ENV['DETA_SPACE_APP_INSTANCE_ID'])) {
@@ -45,7 +46,7 @@ if(!empty($files->names)) {
     echo "No files to delete\n";
 }
 
-$dir = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'test';
+$dir = __DIR__ . DIRECTORY_SEPARATOR  . 'webroot';
 $files = listFiles($dir);
 
 foreach($files as $file) {
