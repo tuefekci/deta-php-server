@@ -10,25 +10,73 @@ const path = require('path');
 const util = require('util');
 const { createProxyMiddleware, responseInterceptor } = require('http-proxy-middleware');
 
+const phpFileTypes = ['php', 'php3', 'php4', 'php5', 'phtml', 'phar', 'inc'];
+const phpDataTypes = ["env", "ini", "txt", "csv", "tsv", "xml", "json", "yml", "yaml", "xls", "xlsx", "doc", "docx"];
 
 const port = process.env.PORT;
 
 const deta = Deta();
-const drive = deta.Drive('webroot');
-
+const drive = deta.Drive('public');
+const logs = deta.Base('logs');
+var publicFiles = [];
+var syncFiles = [];
 
 // ======================================================
-// Load the webroot files from Deta Drive
+// Load the public files from Deta Drive
 // ======================================================
-const tmpFolder = '/tmp/webroot';
+const tmpFolder = '/tmp/public';
 
-async function main() {
+async function sync() {
+
 	await fs.mkdir(tmpFolder, { recursive: true });
+	let allFiles = [];
 
-	let webrootFiles = await drive.list();
+	if(syncFiles.length == 0 || publicFiles.length == 0) {
+		// get all files
+		let result = await drive.list();
+		allFiles = result.names;
+		let last = false;
+
+		if(result.paging && result.paging.last) {
+			last = result.paging.last;
+
+			while (last) {
+				// provide last from previous call
+				result = await drive.list({ last: result.paging.last });
+				allFiles = allFiles.concat(result.names);
+			
+				if(result.paging && result.paging.last) {
+					last = result.paging.last;
+				}else{
+					last = false;
+				}
+			}
+		}
+		
+		if(allFiles.length == 0) {
+			console.info('No files found in Deta Drive');
+			return;
+		}
+	}
+
+	if(process.env.SYNC_ALL_FILES) {
+		syncFiles = allFiles;
+	}else{
+		// get all executable files
+		for (let i = 0; i < allFiles.length; i++) {
+			const file = allFiles[i];
+			const fileType = file.split('.').pop();
+
+			if (phpFileTypes.indexOf(fileType) > -1 || phpDataTypes.indexOf(fileType) > -1) {
+				syncFiles.push(file);
+			} else {
+				publicFiles.push(file);
+			}
+		}
+	}
 
 	const { results, errors } = await PromisePool
-	  .for(webrootFiles.names)
+	  .for(syncFiles)
 	  .withConcurrency(65)
 	  .process(async file => {
 
@@ -55,13 +103,12 @@ async function main() {
 		
 	  });
 
-	  //console.log('Downloaded files:', results.length);
-	  console.log(errors);
-
-
+	console.log('Total files:', allFiles.length);
+	console.log('Downloaded files:', results.length);
+	console.log('Downloaded errors:', errors.length);
 }
 
-main();
+sync();
 // ======================================================
 // ======================================================
 
@@ -79,9 +126,46 @@ function startPHP(port, path) {
 	});
 }
 
-startPHP(1111, "/tmp/webroot");
-startPHP(4040, "./webroot");
+startPHP(1111, "/tmp/public");
+//startPHP(4040, "./webroot");
 
+const middleware = {
+    requireAuthentication: function(req, res, next) {
+        console.log('private route list!');
+        next();
+    },
+    logger: function(req, res, next) {
+       console.log('Original request hit : '+req.originalUrl);
+       next();
+    },
+	handleStaticFiles: function(req, res, next) {
+		console.log('Original request hit : '+req.originalUrl);
+
+		const fileType = req.originalUrl.split('.').pop();
+
+		// if is file
+		if (req.originalUrl.indexOf('.') > -1 && phpFileTypes.indexOf(fileType) == -1) {
+
+			if(publicFiles.indexOf(req.originalUrl) == -1) {
+				res.sendFile(path.join(__dirname, '/public/errors/404.html'));
+				return;
+			}
+
+
+			// if file exists
+			if (fsOld.existsSync(path.join(tmpFolder, '/public'+req.originalUrl))) {
+				res.sendFile(path.join(tmpFolder, '/public'+req.originalUrl));
+			}else{
+				res.sendFile(path.join(__dirname, '/public/errors/404.html'));
+			}
+		}else{
+			next();
+		}
+
+		//console.log('Original request hit : '+req.originalUrl);
+		//next();
+	}
+}
 
 const proxy = createProxyMiddleware({
 	target: 'http://localhost:1111',
@@ -99,34 +183,27 @@ const proxy = createProxyMiddleware({
 		console.log(__dirname);
 		const response = responseBuffer.toString('utf8');
 
-
-		if (proxyRes.statusCode == 404) {
-			//res.writeHeader(404, {"Content-Type": "text/html"});  
-
-			console.log(response);
-			//response.end(fsOld.readFileSync(path.join(__dirname, '/webroot/errors/404.html'), 'utf8'));
-
-			return fsOld.readFileSync(path.join(__dirname, '/webroot/errors/404.html'), 'utf8');
-
-
-		//res.statusCode //res.write(fs.readFile(path.join(__dirname, '/webroot/404.html'), 'utf8')); 
-
-		/*
-			res.writeHeader(500, {"Content-Type": "text/html"});  
-			res.end(fsOld.readFileSync(path.join(__dirname, '/webroot/errors/500.html'), 'utf8'));
-		*/
-
+		try {
+			if (proxyRes.statusCode >= 400) {
+				return fsOld.readFileSync(path.join(__dirname, '/public/errors/404.html'), 'utf8');
+			}
+		} catch (error) {
+			console.error(`Error reading error file: ${error}`);
+			return `An error occurred while processing your request. Please try again later.`;
 		}
-
-		return response.replace('Hello', 'Goodbye'); // manipulate response and return the result
+	
+		return response; // manipulate response and return the result
 	  }),
 	},
   });
 
 
-  
+app.get('/detaphant/flush', middleware.logger, async(req, res) => {
+	await sync();
+	res.send('Hello World!')
+});
 
-app.get('/*', proxy);
+app.get('/*', [middleware.handleStaticFiles, proxy]);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

@@ -4,3 +4,4 @@
 .env
 /server/node_modules/
 /server/tmp/
+/tools/vendor/

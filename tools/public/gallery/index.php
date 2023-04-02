@@ -62,6 +62,24 @@
       $dir = 'images'; // Replace with the path to your folder
       $files = glob('./'.$dir.'/*.{jpg,jpeg,png,gif}', GLOB_BRACE); // Get all image files in the folder
 
+      if(empty($files)) {
+        array_merge($files, array(
+          "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&h=300",
+          "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=300&h=300",
+          "https://images.unsplash.com/photo-1486304873000-235643847519?w=300&h=300",
+          "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=300&h=300",
+        );
+
+        // clone array and merge
+        $files = array_merge($files, $files);
+        $files = array_merge($files, $files);
+        $files = array_merge($files, $files);
+        $files = array_merge($files, $files);
+        $files = array_merge($files, $files);
+
+      }
+
+
       if (count($files) === 0) {
         echo 'No images found.';
       } else {

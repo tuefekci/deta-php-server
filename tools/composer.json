@@ -1,0 +1,8 @@
+{
+    "require": {
+        "tuefekci/deta": "^0.0.4"
+    },
+    "require-dev": {
+        "vlucas/phpdotenv": "^5.5"
+    }
+}

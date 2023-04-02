@@ -37,7 +37,7 @@ if($project_id == "" && isset($_ENV['DETA_PROJECT_ID'])) {
 
 
 $deta = new Deta();
-$my_drive = $deta->drive('webroot');
+$my_drive = $deta->drive('public');
 
 $files = $my_drive->list();
 if(!empty($files->names)) {
@@ -46,7 +46,7 @@ if(!empty($files->names)) {
     echo "No files to delete\n";
 }
 
-$dir = __DIR__ . DIRECTORY_SEPARATOR  . 'webroot';
+$dir = __DIR__ . DIRECTORY_SEPARATOR  . 'public';
 $files = listFiles($dir);
 
 foreach($files as $file) {
