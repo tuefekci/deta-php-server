@@ -1,3 +1,5 @@
+![image](https://repository-images.githubusercontent.com/621638232/41d10563-9e61-49aa-b1d0-0ffa1e054a35)
+
 # WIP! PRERELEASE! deta-php-server aka DETAPHANT!
 PHP Version: 8.2.4
 
