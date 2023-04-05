@@ -116,11 +116,18 @@ sync();
 var phpEnv = {
 	"PHP_INCLUDE_PATH": process.mainModule.path+'/php-includes'
 };
-
 phpEnv = Object.assign(phpEnv, process.env);
 
+var phpPath = "php";
+
+console.log(phpEnv);
+
+if(phpEnv.DETA_RUNTIME) {
+	phpPath = "./php";
+}
+
 function startPHP(port, path) {
-	exec("php -S localhost:"+port+" -t "+path+" -c php.ini", {env: phpEnv}, (error, stdout, stderr) => {
+	exec(phpPath+" -S localhost:"+port+" -t "+path+" -c ./config/php.ini", {env: phpEnv}, (error, stdout, stderr) => {
 		if (error) {
 			console.log(`error: ${error.message}`);
 			return;

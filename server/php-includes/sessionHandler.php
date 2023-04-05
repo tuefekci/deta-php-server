@@ -9,12 +9,12 @@ class Session {
 
 	public static function init($deta) {
 		self::$deta = $deta;
-		self::$base = self::$deta->base('sessions');
+		self::$base = self::$deta->base('ddd');
 		self::initSession();
 	}
 
 	private static function initSession() {
-		session_set_save_handler(
+		\session_set_save_handler(
 			array('Detaphant\Session', 'open'),
 			array('Detaphant\Session', 'close'),
 			array('Detaphant\Session', 'read'),
@@ -42,11 +42,10 @@ class Session {
 	}
 
 	public static function write($id, $data) {
-
 		try {
-			self::$base->insert([[
+			self::$base->put([[
 				'key' => $id,
-				'data' => $data
+				'data' => "$data"
 			]]);
 			return true;
 		} catch (\Throwable $th) {

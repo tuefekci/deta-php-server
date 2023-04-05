@@ -12,7 +12,7 @@ class Bootstrap {
 
 	public static function init() {
 		self::$deta = new Deta();
-		Session::init(self::$deta);
+		//Session::init(self::$deta);
 	}
 
 	private static function initAutoloader() {

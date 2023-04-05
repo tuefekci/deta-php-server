@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6b98fd0f276d89d90078a867ae2dad30",
+    "content-hash": "af12b0a42817e624efc77168e95c6267",
     "packages": [
         {
             "name": "guzzlehttp/guzzle",
@@ -660,16 +660,16 @@
         },
         {
             "name": "tuefekci/deta",
-            "version": "v0.0.4",
+            "version": "v0.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tuefekci/Deta-PHP.git",
-                "reference": "b1ac66b40b03ba786cc07d0839fb8071a96666ef"
+                "reference": "8cfd2e683c5cbe017fadee192f4308d1e13b6db3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tuefekci/Deta-PHP/zipball/b1ac66b40b03ba786cc07d0839fb8071a96666ef",
-                "reference": "b1ac66b40b03ba786cc07d0839fb8071a96666ef",
+                "url": "https://api.github.com/repos/tuefekci/Deta-PHP/zipball/8cfd2e683c5cbe017fadee192f4308d1e13b6db3",
+                "reference": "8cfd2e683c5cbe017fadee192f4308d1e13b6db3",
                 "shasum": ""
             },
             "require": {
@@ -696,7 +696,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tuefekci/Deta-PHP/issues",
-                "source": "https://github.com/tuefekci/Deta-PHP/tree/v0.0.4"
+                "source": "https://github.com/tuefekci/Deta-PHP/tree/v0.0.5"
             },
             "funding": [
                 {
@@ -708,7 +708,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-03-31T02:10:34+00:00"
+            "time": "2023-04-05T16:21:13+00:00"
         }
     ],
     "packages-dev": [],
