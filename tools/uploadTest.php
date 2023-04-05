@@ -23,8 +23,14 @@ function listFiles($dir){
 }
 
 if(file_exists(__DIR__ . DIRECTORY_SEPARATOR . '..'. DIRECTORY_SEPARATOR . '.env')) {
-	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . DIRECTORY_SEPARATOR . '..'. DIRECTORY_SEPARATOR . '');
+    echo "Loading .env file\n".realpath(__DIR__ . DIRECTORY_SEPARATOR . '..')."\n";
+	$dotenv = Dotenv\Dotenv::createImmutable(realpath(__DIR__ . DIRECTORY_SEPARATOR . '..'));
 	$dotenv->load();
+
+    if(empty($_ENV)) {
+        $_ENV = getenv();
+    }
+
 } 
 
 $project_id = "";
@@ -32,6 +38,9 @@ if($project_id == "" && isset($_ENV['DETA_PROJECT_ID'])) {
     $project_id = $_ENV['DETA_PROJECT_ID'];
 }elseif($project_id == "" && isset($_ENV['DETA_SPACE_APP_INSTANCE_ID'])) {
     $project_id = $_ENV['DETA_SPACE_APP_INSTANCE_ID'];
+} else {
+    echo "No project id found\n";
+    exit;
 }
 
 

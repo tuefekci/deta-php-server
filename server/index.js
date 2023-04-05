@@ -18,6 +18,8 @@ const port = process.env.PORT;
 const deta = Deta();
 const drive = deta.Drive('public');
 const logs = deta.Base('logs');
+const sessions = deta.Base('sessions');
+sessions.put({key: 'test', value: 'test'});
 var publicFiles = [];
 var syncFiles = [];
 
@@ -111,9 +113,14 @@ async function sync() {
 sync();
 // ======================================================
 // ======================================================
+var phpEnv = {
+	"PHP_INCLUDE_PATH": process.mainModule.path+'/php-includes'
+};
+
+phpEnv = Object.assign(phpEnv, process.env);
 
 function startPHP(port, path) {
-	exec("php -S localhost:"+port+" -t "+path+" &", (error, stdout, stderr) => {
+	exec("php -S localhost:"+port+" -t "+path+" -c php.ini", {env: phpEnv}, (error, stdout, stderr) => {
 		if (error) {
 			console.log(`error: ${error.message}`);
 			return;
